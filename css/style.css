@@ -1,0 +1,75 @@
+.loginPage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.logDiv {
+    width: 400px;
+    border: 5px solid black;
+    border-radius: 30px;
+
+}
+
+.logButton {
+    font-weight: bold;
+    color: black;
+    margin: 10px;
+    height: 100px;
+    border: 5px solid #000;
+    border-radius: 30px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+.logButton:hover {
+    background-color: grey;
+}
+
+.navigationBar {
+    border: 5px solid black;
+    border-radius: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.logoutButton:hover {
+    color: grey;
+}
+
+.homePage {
+    align-items: center;
+    justify-content: center;
+    justify-content: space-between;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.feature {
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.featureContent {
+    height: 200px;
+    border: 5px solid black;
+    border-radius: 30px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px;
+    transition: background-color 0.3s;
+}
+
+.featureContent a {
+    color: black;
+}
+
+.featureContent:hover {
+    background-color: grey;
+}
