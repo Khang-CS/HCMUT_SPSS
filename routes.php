@@ -3,7 +3,7 @@
 # routes.php
 
 $controllers = array(
-    'pages' => ['home', 'managePrinters', 'manageCurrentPrinters', 'viewAndEdit', 'error']
+    'pages' => ['home', 'managePrinters', 'manageCurrentPrinters', 'viewAndEdit', 'addNewPrinter', 'error']
 );
 
 
