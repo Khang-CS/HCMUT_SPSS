@@ -71,6 +71,37 @@ class Printer
 
         $stmt->execute();
     }
+
+
+    static function addNewPrinter($printerID, $brand, $printerModel, $campus, $building, $room, $isEnabled, $Description_D)
+    {
+        $db = DB::getInstance();
+        $sql = "INSERT INTO PRINTER (printerID, brand, printerModel, campus, building, room, isEnabled, Description_D) VALUES (:printerID ,:brand, :printerModel, :campus, :building, :room, :isEnabled, :Description_D)";
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam(':printerID', $printerID, PDO::PARAM_STR);
+        $stmt->bindParam(':brand', $brand, PDO::PARAM_STR);
+        $stmt->bindParam(':printerModel', $printerModel, PDO::PARAM_STR);
+        $stmt->bindParam(':campus', $campus, PDO::PARAM_STR);
+        $stmt->bindParam(':building', $building, PDO::PARAM_STR);
+        $stmt->bindParam(':room', $room, PDO::PARAM_STR);
+        $stmt->bindParam(':isEnabled', $isEnabled, PDO::PARAM_STR);
+        $stmt->bindParam(':Description_D', $Description_D, PDO::PARAM_STR);
+
+        $stmt->execute();
+    }
+
+    static function deletePrinter($printerID)
+    {
+        $db = DB::getInstance();
+        $sql = "DELETE FROM PRINTER WHERE printerID = :printerID";
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam(':printerID', $printerID, PDO::PARAM_STR);
+
+        $stmt->execute();
+    }
+
 }
 
 class Brand
