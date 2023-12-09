@@ -69,6 +69,49 @@ class Printer
         return $list;
     }
 
+    static function filterPrinter($brand, $campus, $building, $room)
+    {
+        if ($brand === '0' && $campus === '0' && $building === '0' && $room === '0') {
+            return Printer::getPrinterList();
+        }
+
+        $list = [];
+        $db = DB::getInstance();
+        $stringBrand = ($brand === '0') ? "" : " brand = :brand AND";
+        $stringCampus = ($campus === '0') ? "" : " campus = :campus AND";
+        $stringBuilding = ($building === '0') ? "" : " building = :building AND";
+        $stringRoom = ($room === '0') ? "" : " room = :room AND";
+
+        $sql = "SELECT* FROM PRINTER WHERE" . $stringBrand . $stringCampus . $stringBuilding . $stringRoom;
+        $sql = substr($sql, 0, strlen($sql) - 4);
+        $stmt = $db->prepare($sql);
+
+        if ($brand !== '0') {
+            $stmt->bindParam(':brand', $brand, PDO::PARAM_STR);
+        }
+
+        if ($campus !== '0') {
+            $stmt->bindParam(':campus', $campus, PDO::PARAM_STR);
+        }
+
+        if ($building !== '0') {
+            $stmt->bindParam(':building', $building, PDO::PARAM_STR);
+        }
+
+        if ($room !== '0') {
+            $stmt->bindParam(':room', $room, PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($items as $item) {
+            $list[] = new Printer($item['printerID'], $item['brand'], $item['printerModel'], $item['campus'], $item['building'], $item['room'], $item['isEnabled'], $item['Description_D']);
+        }
+
+        return $list;
+    }
+
     static function getPrinterInfo($printerID)
     {
         $db = DB::getInstance();
