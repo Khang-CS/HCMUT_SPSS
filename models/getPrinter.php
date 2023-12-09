@@ -36,6 +36,39 @@ class Printer
         return $list;
     }
 
+    static function searchPrinter($printerInfo)
+    {
+        $list = [];
+        $db = DB::getInstance();
+
+        /* Store value */
+        $printerID = $printerInfo;
+        $brand = $printerInfo;
+        $campus = $printerInfo;
+        $building = $printerInfo;
+        $room = $printerInfo;
+        //
+
+        $sql = "SELECT * FROM PRINTER WHERE printerID = :printerID OR brand = :brand OR campus = :campus OR building = :building OR room = :room";
+        $stmt = $db->prepare($sql);
+
+        /*Bind Param*/
+        $stmt->bindParam(':printerID', $printerID, PDO::PARAM_STR);
+        $stmt->bindParam(':brand', $brand, PDO::PARAM_STR);
+        $stmt->bindParam(':campus', $campus, PDO::PARAM_STR);
+        $stmt->bindParam(':building', $building, PDO::PARAM_STR);
+        $stmt->bindParam(':room', $room, PDO::PARAM_STR);
+        //
+
+        $stmt->execute();
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($items as $item) {
+            $list[] = new Printer($item['printerID'], $item['brand'], $item['printerModel'], $item['campus'], $item['building'], $item['room'], $item['isEnabled'], $item['Description_D']);
+        }
+
+        return $list;
+    }
+
     static function getPrinterInfo($printerID)
     {
         $db = DB::getInstance();
