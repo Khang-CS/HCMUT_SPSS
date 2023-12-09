@@ -140,14 +140,14 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     margin-top: 20px;
     margin-bottom: 50px;
 }
 
 .printerCol {
     height: 300px;
-    /* background-color: grey; */
+
 }
 
 .printer {

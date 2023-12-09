@@ -1,4 +1,3 @@
 <?php
 // views/pages/error.php
-echo 'Có lỗi xảy ra!';
-?>
+echo 'OH NO SOMETHING GO WRONG :((';

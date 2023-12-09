@@ -15,3 +15,8 @@ function confirmAction(action) {
 
     return result;
 }
+
+function goBack() {
+    // Use window.history to navigate back
+    window.history.go(-1);
+}

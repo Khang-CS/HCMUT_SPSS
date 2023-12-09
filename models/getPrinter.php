@@ -36,6 +36,100 @@ class Printer
         return $list;
     }
 
+    static function searchPrinter($printerInfo)
+    {
+        $list = [];
+        $db = DB::getInstance();
+
+        /* Store value */
+        $printerID = $printerInfo;
+        $brand = $printerInfo;
+        $campus = $printerInfo;
+        $building = $printerInfo;
+        $room = $printerInfo;
+        //
+
+        $sql = "SELECT * FROM PRINTER WHERE printerID = :printerID OR brand = :brand OR campus = :campus OR building = :building OR room = :room";
+        $stmt = $db->prepare($sql);
+
+        /*Bind Param*/
+        $stmt->bindParam(':printerID', $printerID, PDO::PARAM_STR);
+        $stmt->bindParam(':brand', $brand, PDO::PARAM_STR);
+        $stmt->bindParam(':campus', $campus, PDO::PARAM_STR);
+        $stmt->bindParam(':building', $building, PDO::PARAM_STR);
+        $stmt->bindParam(':room', $room, PDO::PARAM_STR);
+        //
+
+        $stmt->execute();
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($items as $item) {
+            $list[] = new Printer($item['printerID'], $item['brand'], $item['printerModel'], $item['campus'], $item['building'], $item['room'], $item['isEnabled'], $item['Description_D']);
+        }
+
+        return $list;
+    }
+
+    static function checkPrinterExist($printerID)
+    {
+        $db = DB::getInstance();
+        $sql = "SELECT printerID FROM PRINTER WHERE printerID = :printerID";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':printerID', $printerID, PDO::PARAM_STR);
+
+        $stmt->execute();
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $item = $items[0];
+        if (isset($item['printerID'])) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    static function filterPrinter($brand, $campus, $building, $room)
+    {
+        if ($brand === '0' && $campus === '0' && $building === '0' && $room === '0') {
+            return Printer::getPrinterList();
+        }
+
+        $list = [];
+        $db = DB::getInstance();
+        $stringBrand = ($brand === '0') ? "" : " brand = :brand AND";
+        $stringCampus = ($campus === '0') ? "" : " campus = :campus AND";
+        $stringBuilding = ($building === '0') ? "" : " building = :building AND";
+        $stringRoom = ($room === '0') ? "" : " room = :room AND";
+
+        $sql = "SELECT* FROM PRINTER WHERE" . $stringBrand . $stringCampus . $stringBuilding . $stringRoom;
+        $sql = substr($sql, 0, strlen($sql) - 4);
+        $stmt = $db->prepare($sql);
+
+        if ($brand !== '0') {
+            $stmt->bindParam(':brand', $brand, PDO::PARAM_STR);
+        }
+
+        if ($campus !== '0') {
+            $stmt->bindParam(':campus', $campus, PDO::PARAM_STR);
+        }
+
+        if ($building !== '0') {
+            $stmt->bindParam(':building', $building, PDO::PARAM_STR);
+        }
+
+        if ($room !== '0') {
+            $stmt->bindParam(':room', $room, PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($items as $item) {
+            $list[] = new Printer($item['printerID'], $item['brand'], $item['printerModel'], $item['campus'], $item['building'], $item['room'], $item['isEnabled'], $item['Description_D']);
+        }
+
+        return $list;
+    }
+
     static function getPrinterInfo($printerID)
     {
         $db = DB::getInstance();
@@ -51,7 +145,7 @@ class Printer
             return new Printer($item['printerID'], $item['brand'], $item['printerModel'], $item['campus'], $item['building'], $item['room'], $item['isEnabled'], $item['Description_D']);
         }
 
-        return new Printer('35557A', 'SONY', 'SONY31', 'LY THUONG KIET', 'B1', '301', 1, 'EX');
+        return NULL;
     }
 
     static function updatePrinter($printerID, $brand, $printerModel, $campus, $building, $room, $isEnabled, $Description_D)
@@ -68,6 +162,35 @@ class Printer
         $stmt->bindParam(':room', $room, PDO::PARAM_STR);
         $stmt->bindParam(':isEnabled', $isEnabled, PDO::PARAM_STR);
         $stmt->bindParam(':Description_D', $Description_D, PDO::PARAM_STR);
+
+        $stmt->execute();
+    }
+
+    static function addNewPrinter($printerID, $brand, $printerModel, $campus, $building, $room, $isEnabled, $Description_D)
+    {
+        $db = DB::getInstance();
+        $sql = "INSERT INTO PRINTER (printerID, brand, printerModel, campus, building, room, isEnabled, Description_D) VALUES (:printerID ,:brand, :printerModel, :campus, :building, :room, :isEnabled, :Description_D)";
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam(':printerID', $printerID, PDO::PARAM_STR);
+        $stmt->bindParam(':brand', $brand, PDO::PARAM_STR);
+        $stmt->bindParam(':printerModel', $printerModel, PDO::PARAM_STR);
+        $stmt->bindParam(':campus', $campus, PDO::PARAM_STR);
+        $stmt->bindParam(':building', $building, PDO::PARAM_STR);
+        $stmt->bindParam(':room', $room, PDO::PARAM_STR);
+        $stmt->bindParam(':isEnabled', $isEnabled, PDO::PARAM_STR);
+        $stmt->bindParam(':Description_D', $Description_D, PDO::PARAM_STR);
+
+        $stmt->execute();
+    }
+
+    static function deletePrinter($printerID)
+    {
+        $db = DB::getInstance();
+        $sql = "DELETE FROM PRINTER WHERE printerID = :printerID";
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam(':printerID', $printerID, PDO::PARAM_STR);
 
         $stmt->execute();
     }

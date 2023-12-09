@@ -25,10 +25,49 @@ class PagesController extends BaseController
 
     public function manageCurrentPrinters()
     {
-        $printerList = Printer::getPrinterList();
+        $printerList = null;
+        //search scenario
+        if (isset($_POST['searchPrinter'])) {
+            $printerList = Printer::searchPrinter($_POST['printerInfo']);
+        }
+        //
+
+        //Filter scenario
+        else if (isset($_POST['filter'])) {
+            $brand = $_POST['brand'];
+            $campus = $_POST['campus'];
+            $building = $_POST['building'];
+            $room = $_POST['room'];
+
+            $printerList = Printer::filterPrinter($brand, $campus, $building, $room);
+        }
+
+        //Delete scenario
+        else if (isset($_POST['deletePrinter'])) {
+            Printer::deletePrinter($_POST['printerID']);
+
+            $printerList = Printer::getPrinterList();
+        }
+        //
+
+        //else 
+        else {
+            $printerList = Printer::getPrinterList();
+        }
+        //
+
+        $brandList = Brand::getBrandList();
+
+        $campusList = Campus::getCampusList();
+        $buildingList = Building::getBuildingList();
+        $roomList = Room::getRoomList();
+
         $data = array(
             'printerList' => $printerList,
-            'pageName' => ['manage current printers']
+            'brandList' => $brandList,
+            'campusList' => $campusList,
+            'buildingList' => $buildingList,
+            'roomList' => $roomList
         );
         $this->render('manageCurrentPrinters', $data);
     }
@@ -38,6 +77,8 @@ class PagesController extends BaseController
         if (isset($_POST['save'])) {
             $update = Printer::updatePrinter($_POST['printerID'], $_POST['brand'], $_POST['printerModel'], $_POST['campus'], $_POST['building'], $_POST['room'], $_POST['isEnabled'], $_POST['Description_D']);
         }
+
+
         $printer = Printer::getPrinterInfo($_GET['printerID']);
         $brandList = Brand::getBrandList();
 
@@ -59,27 +100,35 @@ class PagesController extends BaseController
 
     public function addNewPrinter()
     {
-        if (isset($_POST['add'])) {
-            $update = Printer::updatePrinter($_POST['printerID'], $_POST['brand'], $_POST['printerModel'], $_POST['campus'], $_POST['building'], $_POST['room'], $_POST['isEnabled'], $_POST['Description_D']);
+        // if (isset($_POST['add'])) {
+        //     $update = Printer::updatePrinter();
+        // }
+        $checkExist = 0;
+
+        if (isset($_POST['addNewPrinter'])) {
+
+            $checkExist = Printer::checkPrinterExist($_POST['printerID']);
+            if (!$checkExist) {
+                Printer::addNewPrinter($_POST['printerID'], $_POST['brand'], $_POST['printerModel'], $_POST['campus'], $_POST['building'], $_POST['room'], $_POST['isEnabled'], $_POST['Description_D']);
+            } else {
+                echo "<script> alert('printer is exist !')</script>";
+            }
         }
-        $printer = Printer::getPrinterInfo($_GET['printerID']);
+
         $brandList = Brand::getBrandList();
 
         $campusList = Campus::getCampusList();
         $buildingList = Building::getBuildingList();
         $roomList = Room::getRoomList();
 
-
         $data = array(
-            'printer' => $printer,
             'brandList' => $brandList,
             'campusList' => $campusList,
             'buildingList' => $buildingList,
-            'roomList' => $roomList
-
+            'roomList' => $roomList,
         );
 
-        $this->render('addNewPrinter');
+        $this->render('addNewPrinter', $data);
     }
 
     public function error()
